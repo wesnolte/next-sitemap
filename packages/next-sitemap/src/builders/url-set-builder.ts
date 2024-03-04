@@ -73,20 +73,22 @@ export class UrlSetBuilder {
     console.log(this.config.sourceDir)
 
     // Init all page keys
-    let allKeys = []
+    let allKeys: string[] = []
 
-    fs.readFile(traceFilename, "utf-8", (err, data) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      const tracePathObjects = data.match(regex);
+    const data = await fs.readFile(traceFilename, { encoding: 'utf-8' })
 
-      tracePathObjects.forEach((obj) => {
-        const jsonObj = JSON.parse(obj);
-        allKeys.push(jsonObj.tags.path);
-      });
+    // fs.readFile(traceFilename, "utf-8", function (err, data) {
+    //   if (err) {
+    //     console.log(err);
+    //     return;
+    //   }
+    const tracePathObjects = data.match(regex);
+
+    tracePathObjects?.forEach((obj) => {
+      const jsonObj = JSON.parse(obj);
+      allKeys.push(jsonObj.tags.path);
     });
+    // });
 
     // Filter out next.js internal urls and generate urls based on sitemap
     let urlSet = allKeys.filter((x) => !isNextInternalUrl(x))
