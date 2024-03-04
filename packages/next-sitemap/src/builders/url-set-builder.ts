@@ -8,6 +8,10 @@ import {
 } from '../utils/url.js'
 import type { IConfig, ISitemapField, INextManifest } from '../interface.js'
 
+import * as fs from 'node:fs/promises'
+const traceFilename = "./trace"
+const regex = /({"name":"export-page".*?)(?=,{"name":"export-page")/g;
+
 export class UrlSetBuilder {
   config: IConfig
 
@@ -67,14 +71,20 @@ export class UrlSetBuilder {
     const i18n = this.manifest?.routes?.i18n
 
     // Init all page keys
-    const allKeys = [
-      ...Object.keys(this.manifest?.build?.pages ?? {}),
-      ...(this.manifest?.build?.ampFirstPages ?? []),
-      ...(this.manifest?.preRender
-        ? Object.keys(this.manifest?.preRender?.routes ?? {})
-        : []),
-      ...(this.manifest?.staticExportPages ?? []),
-    ]
+    let allKeys = []
+
+    fs.readFile(traceFilename, "utf-8", (err, data) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      const tracePathObjects = data.match(regex);
+
+      tracePathObjects.forEach((obj) => {
+        const jsonObj = JSON.parse(obj);
+        allKeys.push(jsonObj.tags.path);
+      });
+    });
 
     // Filter out next.js internal urls and generate urls based on sitemap
     let urlSet = allKeys.filter((x) => !isNextInternalUrl(x))
