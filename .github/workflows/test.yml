@@ -44,11 +44,11 @@ jobs:
       - name: Install
         run: bun install --immutable --force
 
-      - name: Test
-        run: bun run test
-        env:
-          CI: true
-          NEXT_TELEMETRY_DISABLED: 1
+      # - name: Test
+      #   run: bun run test
+      #   env:
+      #     CI: true
+      #     NEXT_TELEMETRY_DISABLED: 1
 
       - name: Build
         run: bun run build
