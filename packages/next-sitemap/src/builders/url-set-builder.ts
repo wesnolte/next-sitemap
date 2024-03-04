@@ -9,7 +9,7 @@ import {
 import type { IConfig, ISitemapField, INextManifest } from '../interface.js'
 
 import * as fs from 'node:fs/promises'
-const traceFilename = "./trace"
+
 const regex = /({"name":"export-page".*?)(?=,{"name":"export-page")/g;
 
 export class UrlSetBuilder {
@@ -69,6 +69,8 @@ export class UrlSetBuilder {
   async createUrlSet(): Promise<ISitemapField[]> {
     // Load i18n routes
     const i18n = this.manifest?.routes?.i18n
+    const traceFilename = `${this.config.sourceDir}trace`
+    console.log(this.config.sourceDir)
 
     // Init all page keys
     let allKeys = []
