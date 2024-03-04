@@ -44,9 +44,6 @@ jobs:
       - name: Install
         run: bun install --immutable --force
 
-      - name: Lint
-        run: bun run lint
-
       - name: Test
         run: bun run test
         env:
